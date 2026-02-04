@@ -1,0 +1,142 @@
+-- ============================================
+-- TABLE: tb_user
+-- ============================================
+CREATE TABLE tb_user (
+    id UUID NOT NULL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100),
+    cpf VARCHAR(11) UNIQUE,
+    rg VARCHAR(14) UNIQUE,
+    birth_date DATE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    phone VARCHAR(25),
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP,
+    created_by VARCHAR(100),
+    updated_at TIMESTAMP,
+    updated_by VARCHAR(100)
+);
+
+-- ============================================
+-- TABLE: tb_address
+-- ============================================
+CREATE TABLE tb_address (
+    id UUID NOT NULL PRIMARY KEY,
+    street VARCHAR(100) NOT NULL,
+    number VARCHAR(10),
+    complement VARCHAR(50),
+    neighborhood VARCHAR(60) NOT NULL,
+    city VARCHAR(60) NOT NULL,
+    state VARCHAR(2) NOT NULL,
+    zip_code VARCHAR(10) NOT NULL,
+    type_housing VARCHAR(50),
+    created_at TIMESTAMP,
+    created_by VARCHAR(100),
+    updated_at TIMESTAMP,
+    updated_by VARCHAR(100)
+);
+
+-- ============================================
+-- TABLE: tb_user_address  (many-to-many User ↔ Address)
+-- ============================================
+CREATE TABLE tb_user_address (
+    user_id UUID NOT NULL,
+    address_id UUID NOT NULL,
+    PRIMARY KEY (user_id, address_id),
+    CONSTRAINT fk_user_address_user FOREIGN KEY (user_id)
+        REFERENCES tb_user (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_user_address_address FOREIGN KEY (address_id)
+        REFERENCES tb_address (id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- TABLE: tb_pet
+-- ============================================
+CREATE TABLE tb_pet (
+    id UUID NOT NULL PRIMARY KEY,
+    name_pet VARCHAR(100) NOT NULL,
+    type_animal VARCHAR(50) NOT NULL,
+    breed VARCHAR(50) NOT NULL,
+    color VARCHAR(50),
+    bearing VARCHAR(30),
+    weight NUMERIC(10,2),
+    have_allergy BOOLEAN DEFAULT FALSE,
+    notes VARCHAR(255) DEFAULT 'N/A',
+    user_id UUID NOT NULL,
+    created_at TIMESTAMP,
+    created_by VARCHAR(100),
+    updated_at TIMESTAMP,
+    updated_by VARCHAR(100),
+    CONSTRAINT fk_pet_user FOREIGN KEY (user_id)
+        REFERENCES tb_user (id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- TABLE: tb_job
+-- ============================================
+CREATE TABLE tb_job (
+    id UUID NOT NULL PRIMARY KEY,
+    scheduled_date TIMESTAMP NOT NULL,
+    service_type VARCHAR(50) NOT NULL,
+    status_job VARCHAR(50) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
+    notes TEXT,
+    user_id UUID NOT NULL,
+    responsible_id UUID,
+    pet_id UUID NOT NULL,
+    started_at TIMESTAMP,
+    finished_at TIMESTAMP,
+    canceled_at TIMESTAMP,
+    created_at TIMESTAMP,
+    created_by VARCHAR(100),
+    updated_at TIMESTAMP,
+    updated_by VARCHAR(100),
+    CONSTRAINT fk_job_user FOREIGN KEY (user_id)
+        REFERENCES tb_user (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_job_responsible FOREIGN KEY (responsible_id)
+        REFERENCES tb_user (id)
+        ON DELETE SET NULL,
+    CONSTRAINT fk_job_pet FOREIGN KEY (pet_id)
+        REFERENCES tb_pet (id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- TABLE: tb_payment  (many-to-one Payment → Job)
+-- ============================================
+CREATE TABLE tb_payment (
+    id UUID NOT NULL PRIMARY KEY,
+    job_id UUID NOT NULL,
+    amount NUMERIC(10,2) NOT NULL,
+    outstanding_amount NUMERIC(10,2) DEFAULT 0,
+    method VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    due_date TIMESTAMP,
+    paid_at TIMESTAMP,
+    installment_number INT,
+    total_installments INT,
+    transaction_code VARCHAR(100),
+    created_at TIMESTAMP,
+    created_by VARCHAR(100),
+    updated_at TIMESTAMP,
+    updated_by VARCHAR(100),
+    CONSTRAINT fk_payment_job FOREIGN KEY (job_id)
+        REFERENCES tb_job (id)
+        ON DELETE CASCADE
+);
+
+-- ============================================
+-- Test queries
+-- ============================================
+SELECT * FROM tb_user;
+SELECT * FROM tb_supplier;
+SELECT * FROM tb_address;
+SELECT * FROM tb_pet;
+SELECT * FROM tb_job;
+SELECT * FROM tb_payment;

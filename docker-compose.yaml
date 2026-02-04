@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: banhoetosa-app
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - banhoetosa-net
+
+  db:
+    image: postgres:16
+    container_name: banhoetosa-db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - banhoetosa_pgdata:/var/lib/postgresql/data
+    networks:
+      - banhoetosa-net
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: banhoetosa-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@banhoetosa.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "15432:80"
+    depends_on:
+      - db
+    networks:
+      - banhoetosa-net
+
+networks:
+  banhoetosa-net:
+
+volumes:
+  banhoetosa_pgdata:
