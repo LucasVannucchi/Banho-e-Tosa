@@ -1,10 +1,13 @@
+# Arquivos de ajuda e diretórios de build
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Tool Suite (STS)
 .apt_generated
 .classpath
 .factorypath
@@ -13,13 +16,13 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -29,5 +32,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# Arquivo de variáveis de ambiente
+.env
